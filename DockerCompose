@@ -1,0 +1,28 @@
+version: '2'
+
+volumes:
+  nextcloud:
+  dbnc:
+
+services:
+  dbnc:
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - dbnc:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=yourpasswordhere #Change This
+      - MYSQL_PASSWORD=yourpasswordhere #Change This
+      - MYSQL_DATABASE=nextclouddbname
+      - MYSQL_USER=nextcloudusername
+
+  app:
+    image: nextcloud
+    ports:
+      - 8080:80
+    links:
+      - dbnc
+    volumes:
+      - NextCloud:/var/www/html #Change 'nextcloud' to your external drive volume if available
+    restart: always
